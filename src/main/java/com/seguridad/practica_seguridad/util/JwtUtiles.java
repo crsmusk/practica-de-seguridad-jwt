@@ -29,20 +29,39 @@ public class JwtUtiles {
     private String userGenerator;
 
     public String createToken(Authentication authentication) {
-
+        //se crea una firma  para verificar integridad y autenticidad
         Algorithm algorithm = Algorithm.HMAC256(secretKey);
+
         String userName = authentication.getPrincipal().toString();
+
+        //extraemos los roles y los ponemos en un string todo junto separado por comas
         String authorities = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
+        //se crea el token con los datos necesarios para validar al usuario
         String jwtToken = JWT.create()
+                //identifica al usuario
+
                 .withSubject(userName)
+                // roles y permisos para saber que clase de coasas puede hacer el usuario
                 .withClaim("authorities", authorities)
+                 
+                //emisor quien emitio el token 
                 .withIssuer(this.userGenerator)
+
+                // Cuando se creo el token
                 .withIssuedAt(new Date())
+
+                //cuando expira el token
                 .withExpiresAt(new Date(System.currentTimeMillis() + 1800000))
+
+                //identificador unico del token
                 .withJWTId(UUID.randomUUID().toString())
+
+                //cuando empieza a servir el token
                 .withNotBefore(new Date(System.currentTimeMillis()))
+
+                //firma 
                 .sign(algorithm);
         return jwtToken;
 
