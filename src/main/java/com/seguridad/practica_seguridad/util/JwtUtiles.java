@@ -52,6 +52,9 @@ public class JwtUtiles {
                 // Cuando se creo el token
                 .withIssuedAt(new Date())
 
+                //asi habria que poner para usar el email para crear el token
+                // .withClaim("email",email)  
+
                 //cuando expira el token
                 .withExpiresAt(new Date(System.currentTimeMillis() + 1800000))
 
@@ -66,13 +69,17 @@ public class JwtUtiles {
         return jwtToken;
 
     }
-    
+    //validacion del token
     public DecodedJWT validateToken(String token){
         try{
+          // verifica que el token fue firmado con la clave secreta correcta
            Algorithm algorithm =Algorithm.HMAC256(this.secretKey);
+           // Crea el verificador con las reglas de validación
            JWTVerifier verifier= JWT.require(algorithm)
+           //verifica que el token fue emitido por la entidad esperada
            .withIssuer(this.userGenerator)
            .build();
+           //hace toda la validación: firma, algoritmo, issuer, expiración
           DecodedJWT decodedJWT=verifier.verify(token);
           return decodedJWT;
         }catch(JWTVerificationException exception){
@@ -89,4 +96,9 @@ public class JwtUtiles {
     public Map<String,Claim> returnAllClaims(DecodedJWT decodedJWT){
       return decodedJWT.getClaims();
     }
+
+     //asi seria para extraer el email si lo usaramos
+    /*public String extructEmail(DecodedJWT decodedJWT){
+        return decodedJWT.getClaim("email").asString(); 
+    } */
 }

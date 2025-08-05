@@ -40,7 +40,8 @@ protected void doFilterInternal(@NonNull HttpServletRequest request,
                 jwtToken=jwtToken.substring(7);
 
                 DecodedJWT DecodeJwt=utiles.validateToken(jwtToken);
-
+                 
+                //String email = utiles.extractEmail(decodedJWT); 
                 String username=utiles.extructUsername(DecodeJwt);
                 String stringAuthorities=utiles.getExpecificClaim(DecodeJwt, "authorities").asString();
 
@@ -50,6 +51,8 @@ protected void doFilterInternal(@NonNull HttpServletRequest request,
                 Authentication authentication=new UsernamePasswordAuthenticationToken(username, null,authorities);
                 context.setAuthentication(authentication);
                 SecurityContextHolder.setContext(context);
+
+                // request.setAttribute("userEmail", email);
             }
     
     // CRÍTICO: Siempre continuar la cadena

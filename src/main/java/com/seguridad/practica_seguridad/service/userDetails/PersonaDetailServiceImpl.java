@@ -57,6 +57,10 @@ public class PersonaDetailServiceImpl  implements UserDetailsService{
     public AuthResponse loginUser(LoginRequest authLoginRequest){
         String username=authLoginRequest.username();
         String password=authLoginRequest.password();
+        
+        //SI QUIERO USAR EL CORREO TAMBIEN PARA CREAR EL TOKEN
+        /*PersonaEntity usuario = usuarioRepo.findByName(username).orElseThrow(); 
+        String accessToken = jwtUtiles.createToken(authentication, usuario.getEmail()); */
 
         Authentication authentication=this.authentication(username,password);
         SecurityContextHolder.getContext().setAuthentication(authentication);
