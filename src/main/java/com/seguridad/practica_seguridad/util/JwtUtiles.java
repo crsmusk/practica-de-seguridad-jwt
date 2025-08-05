@@ -22,9 +22,11 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 
 @Component
 public class JwtUtiles {
-
+     
+    //llave secreta para la firma
     @Value("${jwt.secret}")
     private String secretKey;
+    //variable que dice quien esta emitiendo el token 
     @Value("${security.jwt.user.generator}")
     private String userGenerator;
 
@@ -86,13 +88,15 @@ public class JwtUtiles {
            throw new JWTVerificationException("token invalid");
         }
     }
-    
+     //devuelve el nombre de usuario
     public String extructUsername(DecodedJWT decodedJWT){
         return decodedJWT.getSubject().toString();
     }
+     //devulve un claim expecifio 
     public Claim getExpecificClaim(DecodedJWT decodedJWT,String claimName){
       return decodedJWT.getClaim(claimName);
     }
+    //devuelve todos los claims
     public Map<String,Claim> returnAllClaims(DecodedJWT decodedJWT){
       return decodedJWT.getClaims();
     }
