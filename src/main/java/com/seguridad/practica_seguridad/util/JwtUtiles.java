@@ -53,7 +53,7 @@ public class JwtUtiles {
 
                 // Cuando se creo el token
                 .withIssuedAt(new Date())
-
+                 
                 //asi habria que poner para usar el email para crear el token
                 // .withClaim("email",email)  
 

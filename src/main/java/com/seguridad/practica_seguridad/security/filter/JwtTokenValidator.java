@@ -30,32 +30,40 @@ public class JwtTokenValidator extends OncePerRequestFilter {
     }
 
     @Override
-protected void doFilterInternal(@NonNull HttpServletRequest request,
-                               @NonNull HttpServletResponse response, 
-                               @NonNull FilterChain filterChain)
-        throws ServletException, IOException {
-    
-     String jwtToken=request.getHeader(HttpHeaders.AUTHORIZATION);
-            if(jwtToken !=null){
-                jwtToken=jwtToken.substring(7);
+    protected void doFilterInternal(@NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain filterChain)
+            throws ServletException, IOException {
+        //extraemos el token del header
+        String jwtToken = request.getHeader(HttpHeaders.AUTHORIZATION);
+        //validamos que no este nulo
+        if (jwtToken != null) {
+            //quitamos el bearer y dejamos solo el token
+            jwtToken = jwtToken.substring(7);
+            //validamos el token y a la ves si esta bien nos devulben un DecodeJwt
+            DecodedJWT DecodeJwt = utiles.validateToken(jwtToken);
 
-                DecodedJWT DecodeJwt=utiles.validateToken(jwtToken);
-                 
-                //String email = utiles.extractEmail(decodedJWT); 
-                String username=utiles.extructUsername(DecodeJwt);
-                String stringAuthorities=utiles.getExpecificClaim(DecodeJwt, "authorities").asString();
+            // String email = utiles.extractEmail(decodedJWT);
+            //extraemos el usuario del token desde el utiles con el decode
+            String username = utiles.extructUsername(DecodeJwt);
+            //extraemos los permisos o authorities 
+            String stringAuthorities = utiles.getExpecificClaim(DecodeJwt, "authorities").asString();
+            
+             // Convertir authorities
+            Collection<? extends GrantedAuthority> authorities = AuthorityUtils
+                    .commaSeparatedStringToAuthorityList(stringAuthorities);
 
-                Collection<? extends GrantedAuthority>authorities=AuthorityUtils.commaSeparatedStringToAuthorityList(stringAuthorities);
-                
-                SecurityContext context=SecurityContextHolder.getContext();
-                Authentication authentication=new UsernamePasswordAuthenticationToken(username, null,authorities);
-                context.setAuthentication(authentication);
-                SecurityContextHolder.setContext(context);
+            // Creamos la autenticación 
+            SecurityContext context = SecurityContextHolder.getContext();
+            Authentication authentication = new UsernamePasswordAuthenticationToken(username, null, authorities);
+            context.setAuthentication(authentication);
+            //ponemos la authenticacion al contexto 
+            SecurityContextHolder.setContext(context);
 
-                // request.setAttribute("userEmail", email);
-            }
-    
-    // CRÍTICO: Siempre continuar la cadena
-    filterChain.doFilter(request, response);
-}
+            // request.setAttribute("userEmail", email);
+        }
+
+        // CRITICO: Siempre continuar la cadena si no habra errores
+        filterChain.doFilter(request, response);
+    }
 }
