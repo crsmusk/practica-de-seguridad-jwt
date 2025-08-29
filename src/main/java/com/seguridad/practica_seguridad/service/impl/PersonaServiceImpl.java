@@ -13,8 +13,12 @@ import jakarta.transaction.Transactional;
 @Service
 public class PersonaServiceImpl implements IPersona{
     
-    @Autowired
-    PersonaRepository repository;
+    
+    private final PersonaRepository repository;
+
+    public PersonaServiceImpl(PersonaRepository repository) {
+    this.repository = repository;
+}
 
     @Override
     @Transactional

@@ -26,8 +26,12 @@ import com.seguridad.practica_seguridad.util.JwtUtiles;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired
-    private JwtUtiles jwtUtiles;
+    
+    private final JwtUtiles jwtUtiles;
+
+    public SecurityConfig(JwtUtiles jwtUtiles) {
+        this.jwtUtiles = jwtUtiles;
+    }
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, AuthenticationProvider authenticationProvider)

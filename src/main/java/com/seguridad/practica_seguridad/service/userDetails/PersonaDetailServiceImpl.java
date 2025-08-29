@@ -34,14 +34,18 @@ import com.seguridad.practica_seguridad.util.JwtUtiles;
 
 @Service
 public class PersonaDetailServiceImpl  implements UserDetailsService{
-   @Autowired
-    PersonaRepository usuarioRepo;
+   
+    private final PersonaRepository usuarioRepo;
+     private final JwtUtiles jwtUtiles;
+    private final RolRepository rolRepo;
+    
+    public PersonaDetailServiceImpl(PersonaRepository usuarioRepo, JwtUtiles jwtUtiles, RolRepository rolRepo) {
+        this.usuarioRepo = usuarioRepo;
+        this.jwtUtiles = jwtUtiles;
+        this.rolRepo = rolRepo;
+    }
 
-    @Autowired
-    JwtUtiles jwtUtiles;
-
-    @Autowired
-    RolRepository rolRepo;
+   
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

@@ -26,24 +26,29 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-
-
 @RequestMapping("/persona")
 @RestController
 public class PersonaController {
-  
-    @Autowired
-    PersonaServiceImpl service;
-    @Autowired
-    PersonaDetailServiceImpl details;
+
+    
+    private final PersonaServiceImpl service;
+    private final PersonaDetailServiceImpl details;
+    public PersonaController(PersonaServiceImpl service, PersonaDetailServiceImpl details) {
+        this.service = service;
+        this.details = details;
+    }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<AuthResponse> register(@RequestBody @Valid AuthCreateUserRequest userRequest){
+    public ResponseEntity<AuthResponse> register(@RequestBody @Valid AuthCreateUserRequest userRequest) {
         return new ResponseEntity<>(this.details.createUser(userRequest), HttpStatus.CREATED);
     }
-    
+
+    /*
+     * El usuario envía las credenciales usuario y contraseña
+     * Los datos llegan al método loginUser() en UserDetails
+     */
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse>login(@RequestBody LoginRequest userRequest){
+    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest userRequest) {
         return new ResponseEntity<>(this.details.loginUser(userRequest), HttpStatus.CREATED);
     }
 
@@ -51,15 +56,15 @@ public class PersonaController {
     public List<PersonaEntity> getAllPersons() {
         return service.findAllPersonas();
     }
+
     @GetMapping("/traer-por-id/{id}")
     public PersonaEntity getPersonsById(@PathVariable Long id) {
         return service.findPersonaById(id);
     }
-   
+
     @DeleteMapping("/delete-person/{id}")
     public void deletePerson(@PathVariable Long id) {
         service.deletePersona(id);
     }
-   
-    
+
 }

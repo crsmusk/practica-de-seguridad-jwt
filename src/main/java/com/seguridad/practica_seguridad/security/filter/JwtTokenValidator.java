@@ -64,6 +64,7 @@ public class JwtTokenValidator extends OncePerRequestFilter {
         }
 
         // CRITICO: Siempre continuar la cadena si no habra errores
+        //Sin esta línea, el proceso se detiene y la seguridad falla  
         filterChain.doFilter(request, response);
     }
 }
